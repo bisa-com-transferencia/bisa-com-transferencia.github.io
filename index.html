@@ -76,16 +76,16 @@
         return;
       }
 
-      // Subir el video a GoFile
+      // Subir el video a GoFile usando la nueva API
       const formData = new FormData();
       formData.append('file', file);
 
       try {
         resultDiv.innerHTML = 'Subiendo video a GoFile...';
-        const response = await fetch('https://api.gofile.io/uploadFile', {
+        const response = await fetch('https://upload.gofile.io/uploadfile', {
           method: 'POST',
           body: formData,
-          mode: 'cors' // Forzar modo CORS
+          mode: 'cors'
         });
 
         // Registrar detalles de la respuesta
