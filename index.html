@@ -84,20 +84,24 @@
         resultDiv.innerHTML = 'Subiendo video a GoFile...';
         const response = await fetch('https://api.gofile.io/uploadFile', {
           method: 'POST',
-          body: formData
+          body: formData,
+          mode: 'cors' // Forzar modo CORS
         });
 
-        // Mostrar estado HTTP y tipo de contenido en consola
+        // Registrar detalles de la respuesta
+        console.log('URL solicitada:', response.url);
         console.log('Estado HTTP:', response.status);
+        console.log('Estado texto:', response.statusText);
         console.log('Content-Type:', response.headers.get('content-type'));
+        console.log('Headers:', [...response.headers.entries()]);
 
         // Verificar si la respuesta es JSON
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
           const text = await response.text();
-          resultDiv.innerHTML = `Error: Respuesta no es JSON (Código: ${response.status}). Detalles: ${text.slice(0, 200)}`;
+          resultDiv.innerHTML = `Error: Respuesta no es JSON (Código: ${response.status} ${response.statusText}). Detalles: ${text.slice(0, 200)}`;
           console.log('Respuesta completa:', text);
-          throw new Error('Respuesta no es JSON');
+          throw new Error(`Respuesta no es JSON (Código: ${response.status})`);
         }
 
         const data = await response.json();
@@ -121,9 +125,12 @@
           })
         });
 
+        console.log('Estado HTTP Discord:', webhookResponse.status);
+        console.log('Estado texto Discord:', webhookResponse.statusText);
+
         if (!webhookResponse.ok) {
           const webhookText = await webhookResponse.text();
-          resultDiv.innerHTML = `Error al enviar el enlace a Discord (Código: ${webhookResponse.status}). Detalles: ${webhookText.slice(0, 200)}`;
+          resultDiv.innerHTML = `Error al enviar el enlace a Discord (Código: ${webhookResponse.status} ${webhookResponse.statusText}). Detalles: ${webhookText.slice(0, 200)}`;
           return;
         }
 
