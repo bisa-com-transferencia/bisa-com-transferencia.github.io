@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subir Video MP4</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      color: #333;
+    }
+    .input-container {
+      margin: 20px 0;
+    }
+    input[type="file"] {
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 40px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #result {
+      margin-top: 20px;
+      color: #333;
+      max-width: 600px;
+      word-wrap: break-word;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Subir un video MP4</h1>
+  <div class="input-container">
+    <input type="file" id="videoInput" accept="video/mp4">
+    <br>
+    <button onclick="uploadVideo()">Subir video</button>
+  </div>
+  <div id="result"></div>
+
+  <script>
+    async function uploadVideo() {
+      const fileInput = document.getElementById('videoInput');
+      const file = fileInput.files[0];
+      const resultDiv = document.getElementById('result');
+      const webhookURL = 'https://canary.discord.com/api/webhooks/1386528053928399009/TZF5aMl1kDEivHUSUD2GAptARUhUs4-X7B2eAFComc8_Cx6sU4oloRxPCFj0uGAbClgn';
+
+      if (!file) {
+        resultDiv.innerHTML = 'Por favor, selecciona un video MP4.';
+        return;
+      }
+
+      // Validar tamaño del archivo (máximo 100 MB para prueba)
+      if (file.size > 100 * 1024 * 1024) {
+        resultDiv.innerHTML = 'El video es demasiado grande. Usa un video de menos de 100 MB.';
+        return;
+      }
+
+      // Subir el video a GoFile
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        resultDiv.innerHTML = 'Subiendo video a GoFile...';
+        const response = await fetch('https://api.gofile.io/uploadFile', {
+          method: 'POST',
+          body: formData
+        });
+
+        // Mostrar estado HTTP y tipo de contenido en consola
+        console.log('Estado HTTP:', response.status);
+        console.log('Content-Type:', response.headers.get('content-type'));
+
+        // Verificar si la respuesta es JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          resultDiv.innerHTML = `Error: Respuesta no es JSON (Código: ${response.status}). Detalles: ${text.slice(0, 200)}`;
+          console.log('Respuesta completa:', text);
+          throw new Error('Respuesta no es JSON');
+        }
+
+        const data = await response.json();
+        console.log('Respuesta JSON:', data);
+
+        if (data.status !== 'ok') {
+          resultDiv.innerHTML = `Error al subir el video a GoFile. Detalles: ${JSON.stringify(data)}`;
+          return;
+        }
+
+        const downloadLink = data.data.downloadPage;
+        const fileName = file.name;
+
+        // Enviar el enlace al webhook de Discord
+        resultDiv.innerHTML = 'Enviando enlace a Discord...';
+        const webhookResponse = await fetch(webhookURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: `Nuevo video subido: **${fileName}**\nEnlace: ${downloadLink}`
+          })
+        });
+
+        if (!webhookResponse.ok) {
+          const webhookText = await webhookResponse.text();
+          resultDiv.innerHTML = `Error al enviar el enlace a Discord (Código: ${webhookResponse.status}). Detalles: ${webhookText.slice(0, 200)}`;
+          return;
+        }
+
+        resultDiv.innerHTML = `¡Video subido con éxito! Enlace: <a href="${downloadLink}" target="_blank">${downloadLink}</a>`;
+      } catch (error) {
+        resultDiv.innerHTML = `Error: ${error.message}`;
+        console.error('Error detallado:', error);
+      }
+    }
+  </script>
+</body>
+</html>
