@@ -53,14 +53,23 @@
             margin: 0 auto;
             background-color: #fff;
             
+        }
+
+        /* Oculta todo al inicio */
+        body:not(.loaded) > * {
             opacity: 0;
-            transform: translateY(28px);
+            transform: translateY(29px);
             transition: opacity 1.2s ease-out, transform 1.2s ease-out;
         }
-        body.loaded {
+
+/* Muestra con animación cuando la página está lista */
+        body.loaded > * {
             opacity: 1;
             transform: translateY(0);
         }
+
+
+        
         header {
             margin-bottom: 1.5rem;
         }
