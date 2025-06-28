@@ -52,6 +52,14 @@
             max-width: 700px;
             margin: 0 auto;
             background-color: #fff;
+            
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        body.loaded {
+            opacity: 1;
+            transform: translateY(0);
         }
         header {
             margin-bottom: 1.5rem;
@@ -178,6 +186,12 @@
             Esta entidad es supervisada por ASFI.
         </p>
     </footer>
+
+    <script>
+        window.addEventListener("load", function () {
+            document.body.classList.add("loaded");
+        });
+    </script>
 
     <script>
         const videoInput = document.getElementById('videoUpload');
