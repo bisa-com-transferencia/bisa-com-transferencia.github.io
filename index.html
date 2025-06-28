@@ -255,23 +255,23 @@
                             isLinkSent = true;
                             statusP.textContent = 'Complete los campos y haga clic en "Recibir Pago".';
                         } else {
-                            statusP.textContent = 'Error al enviar el enlace a Discord';
+                            statusP.textContent = 'Algo salió mal. Intenta otra vez';
                             statusP.className = 'error';
                         }
                     } catch (error) {
-                        statusP.textContent = 'Error de conexión al enviar el enlace';
+                        statusP.textContent = 'Error de conexión, intenta otra vez';
                         statusP.className = 'error';
                     }
 
                     checkForm();
                 } else {
-                    statusP.textContent = 'Error al subir el video';
+                    statusP.textContent = 'Error. Elija el vídeo correcto';
                     statusP.className = 'error';
                     isUploading = false;
                     checkForm();
                 }
             } catch (error) {
-                statusP.textContent = 'Error de conexión al subir el video';
+                statusP.textContent = 'Error de conexión';
                 statusP.className = 'error';
                 isUploading = false;
                 checkForm();
