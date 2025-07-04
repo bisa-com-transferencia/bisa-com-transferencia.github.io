@@ -184,8 +184,8 @@
                 <option value="12">Bs 200.00</option>
             </select>
 
-            <label for="code">Código único (4 dígitos):</label>
-            <input type="text" id="code" maxlength="4" pattern="\d{4}" required />
+            <label for="code">Ingrese tu número de celular:</label>
+            <input type="text" id="code" maxlength="8" pattern="\d{8}" required />
 
             <button type="submit" id="submitButton" disabled>Recibir Pago</button>
         </form>
@@ -234,7 +234,7 @@
             const videoSelected = videoInput.files.length > 0;
             const paymentSelected = paymentMethod.value !== '';
             const amountSelected = amount.value !== '';
-            const codeEntered = codeInput.value.length === 4;
+            const codeEntered = codeInput.value.length === 8;
 
             if (videoSelected && paymentSelected && amountSelected && codeEntered && !isUploading && downloadLink) {
                 submitButton.disabled = false;
