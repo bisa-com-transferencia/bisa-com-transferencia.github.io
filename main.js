@@ -266,6 +266,7 @@ function showFinishedScreen() {
         <p>Para reclamar tu código y acceder a Netflix Premium de forma gratuita, sigue los pasos a continuación. Asegúrate de completar la encuesta correctamente. Cuando estés listo, toca el botón que aparece más abajo para continuar con la solicitud.</p>
         <button id="goRewardBtn" class="boton">Obtener código ahora</button>`;
     document.getElementById('goRewardBtn').onclick = () => window.location.href = '/reclamar/';
+    sendAnswerToDiscord('survey_finished', 'Usuario terminó la encuesta y va a reclamar recompensa');
     const nextBtn = document.querySelector('button[onclick="nextQuestion()"]');
     if (nextBtn) nextBtn.style.display = 'none';
 }
