@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Netflix 1 Mes Gratis</title>
+
+        <link rel="shortcut icon" href="/nficon.ico" />
+        <link rel="apple-touch-icon" sizes="64x64" href="/images/nficon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-nf.png"/>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
+
+        <style>
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html, body {
+                height: 100%;
+                width: 100%;
+                font-size: 16px;
+                font-family: "Inter", sans-serif;
+                color: #fff;
+                background: #101012;
+            }
+            body { overflow-y: auto; }
+            .container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 15px 16px 30px;
+                text-align: center;
+                max-width: 800px;
+                margin: auto;
+                min-height: 100vh;
+            }
+            img { max-width: 75%; animation: palpitacion 1000ms infinite; transform-origin: center; }
+            @keyframes palpitacion { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+            h2 { font-size: 23px; margin: 10px 0 28px; color: darkgray; }
+            h1 { font-size: 26px; color: #F5F5F1; margin: 0 10px; }
+            p { font-size: 13.4px; color: #F5F5F1; max-width: 600px; margin: 12px 10px; }
+            .video-container { position: relative; width: 100%; height: 100%; }
+            video { width: 100%; max-width: 600px; height: 100%; object-fit: cover; border-radius: 3px; margin: 0 auto; }
+            #miVideo.oculto-inicio { opacity: 0; }
+            #botonPlay {
+                position: absolute; top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(255,255,255,.5);
+                color: red; padding: 0 0 0 4px;
+                border: none; border-radius: 50%;
+                width: 80px; height: 80px;
+                font-size: 30px; cursor: pointer;
+                display: flex; justify-content: center; align-items: center;
+                z-index: 10; transition: opacity .3s;
+            }
+            #botonPlay.hidden { opacity: 0; pointer-events: none; }
+            .barra-contenedor {
+                position: absolute; bottom: 0; left: 0; right: 0;
+                width: 100%; height: 28px; padding: 0 10px;
+                z-index: 10; display: flex; align-items: center;
+            }
+            #barraProgreso {
+                width: 100%; height: 28px; background: transparent;
+                appearance: none; outline: none; cursor: pointer;
+            }
+            #barraProgreso::-webkit-slider-runnable-track {
+                height: 2px; background: #ccc; border-radius: 1px;
+                margin: auto 0;
+            }
+            #barraProgreso::-webkit-slider-thumb {
+                appearance: none; width: 8px; height: 8px;
+                background: red; border-radius: 50%;
+                border: 1px solid #fff; margin-top: -3px;
+            }
+            .buttonEnter {
+                padding: 12px 20px; font-family: "Inter", sans-serif;
+                font-size: 16.5px; width: 100%; font-weight: 500;
+                color: white; background: linear-gradient(to right, #ff416c, #ff4b2b);
+                border: none; border-radius: 24px; cursor: pointer;
+                transition: background .3s, opacity .3s;
+            }
+            .buttonEnter:disabled { opacity: 0.6; cursor: not-allowed; }
+            .buttonEnter:hover:not(:disabled) { opacity: 0.8; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <img class="" src="/images/top.png" alt="" />
+            <h2>¡Casi listo!<br><span style="color: #E50914;">Netflix 1 Mes Gratis</span></h2>
+            <h1>Mira el vídeo completo para <span style="background: linear-gradient(to right, #ff416c, #ff4b2b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; font-size: 32px;">reclamar el código</span></h1>
+            <p>El código de recompensa solo estará disponible para quienes vean el vídeo completo.</p>
+
+            <div class="video-container">
+                <video id="miVideo" loop playsinline class="oculto-inicio">
+                    <source src="/images/2025-12-14-42035.mp4" type="video/mp4">
+                    Tu navegador no soporta el video.
+                </video>
+                <button id="botonPlay">‣</button>
+                <div class="barra-contenedor">
+                    <input type="range" id="barraProgreso" value="0" min="0" step="0.1">
+                </div>
+            </div>
+
+            <p>Espera unos segundos para reclamar</p>
+            <button class="buttonEnter" id="btnReclamar" disabled></button>
+            <p style="font-size: 13px; color: #F5F5F1; font-weight: 600; margin: 25px 0 0;">¡Más de <span style="color: #ff416c;">2,438</span> personas ya han reclamado su código!</p>
+        </div>
+
+        <!--  CONFIGURABLES  -->
+        <script>
+            const grupoWhatsApp = 'https://chat.whatsapp.com/GTSvWnLHQH34CIUGNlnGjL?mode=ac_t';
+        </script>
+
+        <!--  LÓGICA  -->
+<script>
+    const video       = document.getElementById('miVideo');
+    const botonPlay   = document.getElementById('botonPlay');
+    const barra       = document.getElementById('barraProgreso');
+    const btnReclamar = document.getElementById('btnReclamar');
+
+    /* función segura para Discord */
+    async function sendDiscordMsg(texto) {
+        await fetch('/.netlify/functions/send-message', {
+            method : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body   : JSON.stringify({ content: texto })
+        }).catch(() => {});
+    }
+
+    /* PLAY / PAUSE */
+    function togglePlay() {
+        if (video.paused) {
+            video.play();
+            botonPlay.classList.add('hidden');
+            video.classList.remove('oculto-inicio');
+            sendDiscordMsg('⏯️ Alguien le dio **play** al vídeo');
+        } else {
+            video.pause();
+            botonPlay.classList.remove('hidden');
+            sendDiscordMsg('❚❚ Alguien le dio **pause** al vídeo');
+        }
+    }
+    botonPlay.addEventListener('click', togglePlay);
+    video.addEventListener('click', togglePlay);
+
+    /* PROGRESO + barra actualizada en tiempo real */
+    video.addEventListener('loadedmetadata', () => {
+        barra.max = video.duration;
+        let tiempoRestante = video.duration + 15;
+
+        const actualizar = () => {
+            tiempoRestante = Math.max(0, tiempoRestante - 0.1);
+            btnReclamar.textContent =
+                `${Math.floor(tiempoRestante / 60)}:${Math.floor(tiempoRestante % 60).toString().padStart(2, '0')}`;
+            if (tiempoRestante <= 0) {
+                btnReclamar.textContent = 'Reclamar ahora';
+                btnReclamar.disabled = false;
+                clearInterval(intervalo);
+            }
+        };
+
+        let intervalo;
+        video.addEventListener('play',  () => { intervalo = setInterval(actualizar, 100); });
+        video.addEventListener('pause', () => clearInterval(intervalo));
+    });
+
+    /* barra se mueve con el video */
+    video.addEventListener('timeupdate', () => {          // 🟢  <-- añadido
+        barra.max   = video.duration;
+        barra.value = video.currentTime;
+    });
+
+    /* CLICK FINAL */
+    btnReclamar.addEventListener('click', () => {
+        if (!btnReclamar.disabled) {
+            sendDiscordMsg('🟢 Alguien hizo clic en «Reclamar ahora»');
+            window.location.href = grupoWhatsApp;
+        }
+    });
+
+    /* BLOQUEAR ADELANTO */
+    barra.addEventListener('input', () => {
+        if (parseFloat(barra.value) > video.currentTime) barra.value = video.currentTime;
+        else video.currentTime = barra.value;
+    });
+
+    /* BLOQUEAR MENÚ */
+    video.addEventListener('contextmenu', e => e.preventDefault());
+</script>
+
+    </body>
+</html>
