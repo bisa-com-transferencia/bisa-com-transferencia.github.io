@@ -34,6 +34,26 @@
     </head>
 
     <body>
+
+        <div id="modal" style="position: fixed; top: 0; left: 0; bottom: 0; width: 100%; height: 100%; background-color: var(--color-bg); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+            <div style="background-color: white; border-radius: 26px; padding: 20px; max-width: 390px; width: 85%; text-align: left; position: relative;">
+                <h2 style="margin: 0 0 10px 0; font-size: 22px; color: var(--color-azul); font-weight: 600; pointer-events: none;">
+                    <strong translate="no">UNESCO: </strong>encuestas
+                </h2>
+                <p style="margin: 0 0 10px 0; font-size: 15.7px; pointer-events: none;">
+                    Completa esta breve encuesta sobre personas desaparecidas en América y en el mundo. Tu participación es anónima y, al finalizar correctamente, recibirás tu recompensa.<br>
+                    <strong>Ayúdanos</strong> &#x1F499;
+                </p>
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 5px; background-color: transparent; border-radius: 0 25px 0 25px; padding: 8px 10px; width: 100%; max-width: 100%; margin-bottom: 20px; border: 2px solid red; user-select: none; pointer-events: none;">
+                    <p style="color: rgba(0, 0, 0, 0.8); font-size: 11.8px; margin: 0; font-weight: 500;">Recompensa</p>
+                    <h5 style="color: red; font-size: 20.5px; margin: 0;">Netflix Premium Gratis</h5>
+                </div>
+                <button onclick="document.getElementById('modal').style.display='none'" style="padding: 13px 20px; background-color: var(--color-azul); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; width: 100%; max-width: 100%; text-align: center; font-weight: 500; font-family: inherit; user-select: none;">Comenzar</button>
+            </div>
+        </div>
+
+
+        
         <div class="container" style="flex: 1; display: flex; flex-direction: column; min-height: 100%;">
             <header>
                 <img src="images/unesco.svg" alt="" id="logo">
