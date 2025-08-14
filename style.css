@@ -83,7 +83,7 @@ header > p {
     flex-direction: column;
     padding: 10px 0;
     width: 100%;
-    gap: 18px;
+    /*gap: 18px;*/
 }
 .question-box {
     display: flex;
@@ -99,13 +99,25 @@ header > p {
     padding: 5px 0;
     font-weight: 500;
 }
-.question-box label {
+.question-box > label {
     display: flex;
     align-items: center;
     gap: 10px;
     cursor: pointer;
     user-select: none;
     padding: 5px 0;
+}
+.input-p-n {
+    appearance: none;
+    all: unset;
+    padding: 10px 12px;
+     border: 1.2px solid var(--color-gris);
+     border-radius: 10px;
+    transition: border-color 0.2s;
+}
+
+.input-p-n:not(:placeholder-shown):not(:focus) {
+    border-color: var(--color-azul);
 }
 
 .boton {
