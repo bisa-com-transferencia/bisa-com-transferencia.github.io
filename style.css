@@ -111,9 +111,10 @@ header > p {
     appearance: none;
     all: unset;
     padding: 10px 12px;
-     border: 1.2px solid var(--color-gris);
-     border-radius: 10px;
-    transition: border-color 0.2s;
+    border: 1.2px solid var(--color-gris);
+    border-radius: 10px;
+    transition: border-color 0.3s;
+    background-color: var(--color-bg);
 }
 
 .input-p-n:not(:placeholder-shown):not(:focus) {
@@ -141,9 +142,6 @@ header > p {
 .boton:active {
     transform: scale(0.99);
     background-color: var(--color-active);
-}
-#goRewardBtn {
-    margin: 12px 0 0 0;
 }
 footer {
     display: flex;
