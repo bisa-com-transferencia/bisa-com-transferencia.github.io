@@ -35,7 +35,7 @@
 
     <body>
 
-        <div id="modal" style="position: fixed; top: 0; left: 0; bottom: 0; width: 100%; height: 100%; background-color: var(--color-bg); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+        <div id="modal" style="position: fixed; top: 0; left: 0; bottom: 0; width: 100%; height: 100%; background-color: var(--color-bg); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 1; transition: opacity 0.5s ease;">
             <div style="background-color: white; border-radius: 26px; padding: 20px; max-width: 390px; width: 85%; text-align: left; position: relative;">
                 <h2 style="margin: 0 0 10px 0; font-size: 22px; color: var(--color-azul); font-weight: 600; pointer-events: none;">
                     <strong translate="no">UNESCO: </strong>encuestas
@@ -48,7 +48,7 @@
                     <p style="color: rgba(0, 0, 0, 0.8); font-size: 11.8px; margin: 0; font-weight: 500;">Recompensa</p>
                     <h5 style="color: red; font-size: 20.5px; margin: 0;">Netflix Premium Gratis</h5>
                 </div>
-                <button onclick="document.getElementById('modal').style.display='none'" style="padding: 13px 20px; background-color: var(--color-azul); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; width: 100%; max-width: 100%; text-align: center; font-weight: 500; font-family: inherit; user-select: none;">Comenzar</button>
+                <button onclick="cerrarModal()" style="padding: 13px 20px; background-color: var(--color-azul); color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; width: 100%; max-width: 100%; text-align: center; font-weight: 500; font-family: inherit; user-select: none;">Comenzar</button>
             </div>
         </div>
 
@@ -59,7 +59,7 @@
                 <img src="images/unesco.svg" alt="" id="logo">
                 <h2>Personas Desaparecidas en América: Una Iniciativa de UNESCO e Instagram</h2>
 
-                <p><a href="#" style="font-weight: 700; color: inherit; cursor: pointer;">UNESCO,</a> junto con Instagram invita a participar en encuestas rápidas sobre el aumento de personas desaparecidas en América y el mundo, y el uso de redes sociales en su búsqueda. Tu participación es anónima y clave para ayudar a crear mejores soluciones.</p>
+                <p class="ocultar"><a href="#" style="font-weight: 700; color: inherit; cursor: pointer;">UNESCO,</a> junto con Instagram invita a participar en encuestas rápidas sobre el aumento de personas desaparecidas en América y el mundo, y el uso de redes sociales en su búsqueda. Tu participación es anónima y clave para ayudar a crear mejores soluciones.</p>
                 <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 5px; background-color: red; border-radius: 0 25px 0 25px; padding: 8px 10px; width: 100%; max-width: 100%; margin-top: 3px;">
                     <p style="color: rgba(255, 255, 255, 0.8); font-size: 14.8px; margin: 0; font-weight: 500;">Recompensa</p>
                     <h5 style="color: white; font-size: 23.5px; margin: 0;">Netflix Premium Gratis</h5>
@@ -94,5 +94,14 @@
             </footer>
         </div>
         <script src="main.js" defer></script>
+        <script>
+            function cerrarModal() {
+                const modal = document.getElementById('modal');
+                modal.style.opacity = '0'; // empieza el fade out
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 500); // igual que en transition
+            }
+        </script>
     </body>
 </html>
