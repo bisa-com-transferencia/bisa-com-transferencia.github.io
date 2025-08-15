@@ -136,7 +136,7 @@ const questions = [
             { value: "d", text: "Tráfico de personas" }
         ],
         name: "q15"
-    },*/
+    },*//*
     {
         question: "¿Qué acción evitarías completamente, aunque pudieras hacerlo?",
         options: [
@@ -146,7 +146,7 @@ const questions = [
             { value: "d", text: "Encubrir o proteger a alguien que cometió abuso sexual" }
         ],
         name: "q16"
-    },
+    },*/
     {
         question: "¿Cuál de las siguientes acciones sí podrías llegar a hacer?",
         options: [
@@ -281,25 +281,22 @@ function showFinishedScreen() {
     questionBox.style.display = 'none';
     const divNone = document.getElementById('div-none');
     if (divNone) divNone.style.display = 'flex';
-    
+
+    // Ocultar todos los elementos con class="ocultar"
+    const elementosOcultar = document.querySelectorAll('.ocultar');
+    elementosOcultar.forEach(elemento => {
+        elemento.style.display = 'none';
+    });
+
     const nextBtn = document.querySelector('button[onclick="nextQuestion()"]');
     if (nextBtn) {
         nextBtn.textContent = 'Último paso';
+        // Quitamos la deshabilitación y validación automática
+        nextBtn.disabled = false;
         nextBtn.onclick = handleLastStep;
-        nextBtn.disabled = true;
     }
-    
-    const celularInput = document.getElementById('celular');
-    const paisInput = document.getElementById('pais');
-    
-    if (celularInput && paisInput) {
-        const validateInputs = () => {
-            nextBtn.disabled = !(celularInput.value.trim() && paisInput.value.trim());
-        };
-        
-        celularInput.addEventListener('input', validateInputs);
-        paisInput.addEventListener('input', validateInputs);
-    }
+
+    // Eliminamos validateInputs y eventos de input, no es necesario
 }
 
 async function handleLastStep() {
