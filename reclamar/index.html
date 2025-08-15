@@ -360,10 +360,36 @@
         </script>
 
         <script>
-            // bloquea atrás
-            window.history.pushState(null, null, window.location.href);
+            // Video principal
+            const video = document.getElementById('miVideo');
 
-            // intercepta el botón atrás / gestos
+            // Pausa por visibilidad
+            let pausedByVisibility = false;
+
+            // Detecta cambio de visibilidad
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    if (!video.paused) {
+                        video.pause();
+                        pausedByVisibility = true;
+                    }
+                }
+            });
+
+            // Forzar render al reproducir tras volver
+            video.addEventListener('play', () => {
+                if (pausedByVisibility) {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    pausedByVisibility = false;
+                }
+            });
+
+            // --- Bloqueo de botón atrás ---
+            window.history.pushState(null, null, window.location.href);
             window.addEventListener('popstate', function() {
                 window.history.pushState(null, null, window.location.href);
             });
