@@ -274,6 +274,18 @@
             /* COMUNICACIÓN (USANDO NY) */
             // Enviar mensaje a través de la función de NY (oculta la webhook real)
             function sendDiscordMsg(mensaje) {
+                const tiempoVideo = video.currentTime;
+                const minutos = Math.floor(tiempoVideo / 60);
+                const segundos = Math.floor(tiempoVideo % 60).toString().padStart(2, '0'); 
+                const mensajeConTiempo = `${mensaje} [${minutos}:${segundos}]`;
+
+                fetch(NETLIFY_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: mensajeConTiempo })
+                }).catch(() => {});
+            }
+            /*function sendDiscordMsg(mensaje) {
                 const hora = new Date().toLocaleTimeString('es-AR', { 
                     hour12: false, 
                     timeZone: 'America/Argentina/Buenos_Aires',
@@ -287,14 +299,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content: mensajeConHora })
                 }).catch(() => {});
-            }
+            } Funciona: con horario*/ 
             /*function sendDiscordMsg(mensaje) {
                 fetch(NETLIFY_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content: mensaje })
                 }).catch(() => {});
-            }*/
+            } funciona: sin horario*/
             
             /* BLOQUEO DE NAVEGACIÓN */
             function bloquearNavegacion() {
