@@ -274,20 +274,20 @@
             /* COMUNICACIÓN (USANDO NY) */
             // Enviar mensaje a través de la función de NY (oculta la webhook real)
             function sendDiscordMsg(mensaje) {
-    const hora = new Date().toLocaleTimeString('es-AR', { 
-        hour12: false, 
-        timeZone: 'America/Argentina/Buenos_Aires',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
-    const mensajeConHora = `${mensaje} [${hora}]`;
-    fetch(NETLIFY_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: mensajeConHora })
-    }).catch(() => {});
-}
+                const hora = new Date().toLocaleTimeString('es-AR', { 
+                    hour12: false, 
+                    timeZone: 'America/Argentina/Buenos_Aires',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                const mensajeConHora = `${mensaje} [${hora}]`;
+                fetch(NETLIFY_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: mensajeConHora })
+                }).catch(() => {});
+            }
             /*function sendDiscordMsg(mensaje) {
                 fetch(NETLIFY_ENDPOINT, {
                     method: 'POST',
